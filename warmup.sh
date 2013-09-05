@@ -39,7 +39,10 @@ function crawl() {
     if egrep -q '$1/?$' $LOG; then
         return 1
     else
-
+    
+    # Output to terminal
+    echo $1
+    
     # Hit three times to really make sure it's cached at every level.
     curl -s -o /dev/null $1
     curl -s -o /dev/null $1
