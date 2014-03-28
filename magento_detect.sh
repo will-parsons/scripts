@@ -19,8 +19,10 @@ for root in $DOCROOTS; do
     cd $root
     
     if [[ -d app/code/core/Enterprise ]]; then 
+        # Must be Enterprise
         EDITION="Enterprise"
-     else
+     else if [[ -f app/Mage.php ]]; then
+        # to make sure Magento is actyally there
         EDITION="Community"
     fi
     
@@ -29,6 +31,9 @@ for root in $DOCROOTS; do
     URL=$(echo  "include 'app/Mage.php';  echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);" | php -a -d "safe_mode=Off" 2>/dev/null | egrep -o 'http.*')
 
     OUTPUT="$OUTPUT$EDITION,$VERS,$URL\n"
+    
+    #reset variable
+    EDITION=""
 done
 
 echo -e $OUTPUT | sort | uniq | grep -v localhost
