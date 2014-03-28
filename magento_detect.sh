@@ -21,7 +21,7 @@ for root in $DOCROOTS; do
     if [[ -d app/code/core/Enterprise ]]; then 
         # Must be Enterprise
         EDITION="Enterprise"
-     elif [[ -e app/Mage.php ]]; then
+     elif [[ -e app/Mage.php ]]; then
         # to make sure Magento is actually there, avoiding false positives
         EDITION="Community"
     fi
