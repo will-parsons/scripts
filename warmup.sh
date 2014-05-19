@@ -43,12 +43,11 @@ function crawl() {
     # Output to terminal
     echo $1
     
-    # First, pretend we're a phone and a tablet, to warm up any caches for those User Agents.
-    # If you're using Varnish, you should be normalizing these.
-    curl -s -o /dev/null -A "iPhone" $1
-    curl -s -o /dev/null -A "iPad"   $1 
+    # If you are normalizing User Agents in Varnish, you might want to hit with other UAs first.
+    # curl -s -o /dev/null -A "iPhone" $1
+    # curl -s -o /dev/null -A "iPad"   $1 
     
-    # Use the third hit to grep for URLs to hit next. Optimised for Magento source output.
+    # Curl the URL then grep for URLs to hit next. Optimised for Magento source output.
     # The exceptions are to prevent overuse, tag clouds and the like can end up cause enless unique URLs.
     # Note: the grep ^http://$BASE is what keeps to this website. Otherwise you'll probably curl the whole internet.
     LIST=$(curl -s -A "Mozilla/5.0 (https://github.com/will-parsons/scripts/blob/master/warmup.sh)" $1 | egrep -o 'href="[^"^\?]*"' | cut -d'"' -f2 | grep ^http://$BASE | egrep -v 'login|checkout|media|image|gallery|comments|blog|feed|account|uenc|review-form|sendfriend|wishlist|tag|price|filter|wp|\/l\/')
