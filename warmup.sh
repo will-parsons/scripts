@@ -28,7 +28,7 @@ LOG=$LOGDIR/warmup_$1_$(date +"%Y%m%d_%H%M").log
 touch $LOG
 
 # Delete logs older than a week
-PREVLOGS=$(find $LOGDIR -type f -name "warmup_$1_*" -mtime +7)
+PREVLOGS=$(find $LOGDIR -type f -name "warmup_*" -mtime +7)
 rm -f $PREVLOGS
 
 
