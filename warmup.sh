@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # author: will parsons
-# version: 0.1
+# version: 0.2
 #
 # Script to crawl a site, warm up the cache, and log the results.
 # Logs to current directory, with a list of URLs which could be used for "siege -i" for load testing.
@@ -15,14 +15,22 @@
 #
 #
 
+BASE=$1
+LOGDIR="."
+
+# Avoid cron jobs piling up
+PROCESS_LIMIT=10
+
+# Quick way to avoid really long or cyclical paths, like
+# http://example.com/store/catalog/product/view/id/1234/x/some-product-name/category/123/
+MAX_PATH_DEPTH=8
+
 if [ "x$1" = "x" ]; then
     echo "usage: $0 <hostname>"
     exit 1
 fi
 
 
-BASE=$1
-LOGDIR="."
 
 LOG=$LOGDIR/warmup_$1_$(date +"%Y%m%d_%H%M").log
 touch $LOG
@@ -54,14 +62,21 @@ function crawl() {
     # Log it, so we can skip it next time.
     echo $1 >> $LOG
 
-    # Here's the recursion, with another check to avoid infinite loops.
+    # Here's the recursion, with check for infinite loops (logged already?) and path depth
     for i in $LIST; do
+        # Count the slashes, allowing one at the end and two for http://
+        PATH_DEPTH=$(echo "$(tr -dc '/' <<<"$i" | wc -c) - 3" | bc)
+
         if egrep -q "$i/?$" $LOG; then
+            # Already seen it
+            continue
+        elif [ $PATH_DEPTH -gt $MAX_PATH_DEPTH ]; then
+            # Path too deep, skip
             continue
         else
             crawl $i
         fi
-    done 
+    done
 
 fi
 
