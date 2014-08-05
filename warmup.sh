@@ -58,7 +58,7 @@ function crawl() {
     # Curl the URL then grep for URLs to hit next. Optimised for Magento source output.
     # The exceptions are to prevent overuse, tag clouds and the like can end up cause enless unique URLs.
     # Note: the grep ^http://$BASE is what keeps to this website. Otherwise you'll probably curl the whole internet.
-    LIST=$(curl -s -A "Mozilla/5.0 (https://github.com/will-parsons/scripts/blob/master/warmup.sh)" $1 | egrep -o 'href="[^"^\?]*"' | cut -d'"' -f2 | grep ^http://$BASE | egrep -v 'download|login|checkout|media|image|gallery|comments|blog|feed|account|uenc|review-form|sendfriend|wishlist|tag|price|filter|wp|\/l\/')
+    LIST=$(curl -s -A "Mozilla/5.0 (https://github.com/will-parsons/scripts/blob/master/warmup.sh)" $1 | egrep -o 'href="[^"^\?]*"' | cut -d'"' -f2 | grep ^http://$BASE | egrep -v 'download|login|checkout|media|image|gallery|comments|blog|feed|account|uenc|review|sendfriend|wishlist|tag|price|filter|wp|\/l\/')
     # Log it, so we can skip it next time.
     echo $1 >> $LOG
 
